@@ -1,7 +1,9 @@
 package main
 
 import (
-	"log"
+	"backend/configs"
+	"backend/pkg/utils"
+	"os"
 
 	"github.com/gofiber/fiber/v3"
 )
@@ -9,15 +11,16 @@ import (
 func main() {
 	println("Hello, World!")
 
-	app := fiber.New()
-
-	app.Get("/", func(c fiber.Ctx) error {
-        return c.SendString("TEST") // => Hello john 👋!
-    })
-
-    log.Fatal(app.Listen(":3000"))
+	config := configs.FiberConfig()
 
 
-	app.Listen(":3000")
+	app := fiber.New(config)
+	
+
+	if os.Getenv("STATUS") == "prod" {
+		utils.Running(app)
+	} else {
+		utils.Server(app)
+	}
 
 }
